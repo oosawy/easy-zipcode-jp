@@ -1,0 +1,37 @@
+{
+  "name": "easy-zipcode-jp",
+  "version": "0.0.1",
+  "description": "郵便番号から住所を簡単に取得できるライブラリ",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "vitest",
+    "check": "tsc --noEmit && eslint",
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oosawy/easy-zipcode-jp.git"
+  },
+  "author": "@oosawy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oosawy/easy-zipcode-jp/issues"
+  },
+  "homepage": "https://github.com/oosawy/easy-zipcode-jp#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@vitest/coverage-v8": "^3.0.7",
+    "eslint-config-flat-gitignore": "^2.1.0",
+    "globals": "^16.0.0",
+    "publint": "^0.3.7",
+    "tsup": "^8.4.0",
+    "typescript": "5.7",
+    "typescript-eslint": "^8.25.0",
+    "vitest": "^3.0.7"
+  }
+}
