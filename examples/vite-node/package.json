@@ -5,7 +5,7 @@
     "dev": "vite-node --watch index.ts"
   },
   "dependencies": {
-    "easy-zipcode-jp": "*"
+    "easy-zipcode-jp": "file:../.."
   },
   "devDependencies": {
     "vite-node": "^3.0.7"
