@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "vite-node index.ts",
+    "dev": "vite-node --watch index.ts"
+  },
+  "dependencies": {
+    "easy-zipcode-jp": "file:../.."
+  },
+  "devDependencies": {
+    "vite-node": "^3.0.7"
+  }
+}
