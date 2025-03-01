@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "郵便番号から住所を簡単に取得できるライブラリ",
   "type": "module",
-  "main": "dist/index.mjs",
-  "types": "dist/index.d.mts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
