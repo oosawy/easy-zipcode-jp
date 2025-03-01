@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "vitest",
-    "lint": "",
+    "check": "tsc --noEmit && eslint",
     "build": "tsup"
   },
   "repository": {
