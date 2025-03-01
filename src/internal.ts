@@ -7,9 +7,12 @@ export type Address = {
 
 export const getAreaMap = async (areaCode: string) => {
   try {
-    const module = await import(`../assets/${areaCode}.json`)
+    const module = await import(
+      `virtual:zipcode/${areaCode.slice(0, 1)}/${areaCode}`
+    )
     return module.default
-  } catch {
+  } catch (err) {
+    console.log(err)
     return null
   }
 }

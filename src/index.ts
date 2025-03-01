@@ -1,12 +1,15 @@
 // export { type Address, lookup, resolve } from './internal'
 
-// const zipcode = await import('virtual:zipcode')
+const a = Math.random() ? 1 :1
+const b = Math.random() ? 100 :100
 
-import zipcode from 'virtual:zipcode'
+console.log(await import(`virtual:zipcode/${a}/${b}`))
 
-console.log(zipcode)
+// import zipcode from 'virtual:zipcode'
 
-const { default: bucket } = await zipcode['1']()
-const { default: area } = await bucket['100']()
+// console.log(zipcode)
 
-console.log(area)
+// const { default: bucket } = await zipcode['1']()
+// const { default: area } = await bucket['100']()
+
+// console.log(area)

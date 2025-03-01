@@ -30,6 +30,7 @@ export function virtualZipcodeModulePlugin(): Plugin {
       const buckets = await listBuckets(assetsDir)
 
       build.onResolve({ filter: /^virtual:zipcode(\/.*?)*$/ }, (args) => {
+        console.log(args)
         return { path: args.path, namespace: 'virtual-zipcode' }
       })
 
