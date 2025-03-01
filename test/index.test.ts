@@ -37,12 +37,22 @@ describe('lookup', () => {
 describe('resolve', () => {
   it('should return correct address for a valid zip code', async () => {
     const result = await resolve('100-0000')
-    expect(result).toEqual({
-      zip: '1000000',
-      prefectures: '東京都',
-      city: '千代田区',
-      other: '',
-    })
+    expect(result).toMatchInlineSnapshot(
+      {
+        zip: '1000000',
+        prefectures: '東京都',
+        city: '千代田区',
+        other: '',
+      },
+      `
+      {
+        "city": "千代田区",
+        "other": "",
+        "prefectures": "東京都",
+        "zip": "1000000",
+      }
+    `
+    )
   })
 
   it('should return undefined for a non-existent zip code', async () => {
@@ -52,15 +62,15 @@ describe('resolve', () => {
 
   it('should throw an error for an invalid zip code format', async () => {
     await expect(resolve('abcd1234')).rejects.toThrow(
-      'Invalid ZIP code format.'
+      'Invalid ZIP code: It must follow the pattern: 100-0001 or 1000001.'
     )
   })
 })
 
 describe('parseAreaCode', () => {
   it('should parse valid area codes', () => {
-    expect(parseAreaCode('100')).toEqual({ area: '100' })
-    expect(parseAreaCode('999')).toEqual({ area: '999' })
+    expect(parseAreaCode('100')).toStrictEqual({ area: '100' })
+    expect(parseAreaCode('999')).toStrictEqual({ area: '999' })
   })
 
   it('should throw an error for invalid area codes', () => {
@@ -71,12 +81,12 @@ describe('parseAreaCode', () => {
 
 describe('parseZipCode', () => {
   it('should parse valid zip codes', () => {
-    expect(parseZipCode('100-0001')).toEqual({
+    expect(parseZipCode('100-0001')).toStrictEqual({
       area: '100',
       local: '0001',
       zip: '1000001',
     })
-    expect(parseZipCode('2000002')).toEqual({
+    expect(parseZipCode('2000002')).toStrictEqual({
       area: '200',
       local: '0002',
       zip: '2000002',
