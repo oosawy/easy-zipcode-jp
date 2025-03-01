@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 # project
+data
 assets

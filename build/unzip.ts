@@ -43,3 +43,5 @@ export const fetchZipcodeMap = async (
   }
   return result
 }
+
+console.log(await fetchZipcodeMap())

@@ -6,11 +6,16 @@ export type Address = {
 }
 
 export const getAreaMap = async (areaCode: string) => {
+  const asRecord = <T extends Record<string, unknown>>(mappings: T) =>
+    mappings as typeof mappings extends Record<string, infer U>
+      ? Record<string, U>
+      : never
+
   try {
-    const module = await import(
-      `virtual:zipcode/${areaCode.slice(0, 1)}/${areaCode}`
-    )
-    return module.default
+    const { default: maps } = await import(`../assets`)
+    const { default: bucket } = await asRecord(maps)[areaCode.slice(0, 1)]()
+    const { default: area } = await asRecord(bucket)[areaCode]()
+    return area
   } catch (err) {
     console.log(err)
     return null
