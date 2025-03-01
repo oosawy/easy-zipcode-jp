@@ -1,3 +1,1 @@
-export function hello(name: string): string {
-  return `Hello, ${name}!`
-}
+export { type Address, lookup, resolve } from './internal'
