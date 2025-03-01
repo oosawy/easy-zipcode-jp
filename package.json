@@ -12,7 +12,7 @@
   "scripts": {
     "test": "vitest",
     "dev": "tsup --watch",
-    "build": "npm run gen && pwd && ls /home/runner/work/easy-zipcode-jp/easy-zipcode-jp/assets && tsup",
+    "build": "npm run gen && tsup",
     "gen": "ejpc-generate-json -d assets",
     "check": "tsc --noEmit && eslint"
   },
