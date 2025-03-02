@@ -1,67 +1,95 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { Address, fetchZipcodeMap } from './unzip'
 import { fileURLToPath } from 'url'
 
-async function build() {
+async function prepare() {
+  const zipcodeMap = await fetchZipcodeMap()
+
   const basePath = fileURLToPath(new URL('../', import.meta.url))
 
-  const dataDir = path.join(basePath, 'data')
-  const assetsDir = path.join(basePath, 'assets')
-  const bucketDir = path.join(assetsDir, 'bucket')
+  const assetsDir = path.resolve(basePath, 'assets')
   const mapDir = path.join(assetsDir, 'map')
+  const bucketDir = path.join(assetsDir, 'bucket')
 
-  await fs.rm(assetsDir, { recursive: true, force: true })
+  await fs.rm(assetsDir, { force: true, recursive: true })
 
-  await fs.mkdir(assetsDir, { recursive: true })
-  await fs.mkdir(bucketDir, { recursive: true })
   await fs.mkdir(mapDir, { recursive: true })
+  await fs.mkdir(bucketDir, { recursive: true })
 
-  const entries = await fs.readdir(dataDir)
-  const jsonFiles = entries.filter((file) => /^\d{3}\.json$/.test(file))
+  const buckets: Record<string, Record<string, Record<string, Address[]>>> = {}
 
-  const buckets: Record<string, string[]> = {}
-  for (const file of jsonFiles) {
-    const bucket = file[0]
+  for (const zip in zipcodeMap) {
+    const addresses = zipcodeMap[zip]
+    const bucket = zip[0]
+    const area = zip.substring(0, 3)
+
     if (!buckets[bucket]) {
-      buckets[bucket] = []
+      buckets[bucket] = {}
     }
-    buckets[bucket].push(file)
+    if (!buckets[bucket][area]) {
+      buckets[bucket][area] = {}
+    }
+    buckets[bucket][area][zip] = addresses
   }
 
-  let assetsIndexContent = 'const map = {\n'
-  for (const bucket of Object.keys(buckets).sort()) {
-    assetsIndexContent += `  '${bucket}': () => import('./map/${bucket}'),\n`
-  }
-  assetsIndexContent += '};\n\nexport default map;\n'
-  await fs.writeFile(
-    path.join(assetsDir, 'index.ts'),
-    assetsIndexContent,
-    'utf8'
-  )
-
-  for (const bucket of Object.keys(buckets).sort()) {
-    const bucketMapPath = path.join(mapDir, `${bucket}.ts`)
-    const bucketBucketDir = path.join(bucketDir, bucket)
-
-    await fs.mkdir(bucketBucketDir, { recursive: true })
-
-    let bucketContent = 'const areas = {\n'
-    for (const file of buckets[bucket].sort()) {
-      const area = file.replace('.json', '')
-      bucketContent += `  '${area}': () => import('../bucket/${bucket}/${area}.json'),\n`
-    }
-    bucketContent += '};\n\nexport default areas;\n'
-    await fs.writeFile(bucketMapPath, bucketContent, 'utf8')
-
-    for (const file of buckets[bucket]) {
-      const sourceFilePath = path.join(dataDir, file)
-      const destFilePath = path.join(bucketBucketDir, file)
-      await fs.copyFile(sourceFilePath, destFilePath)
+  for (const bucket in buckets) {
+    const bucketPath = path.join(bucketDir, bucket)
+    await fs.mkdir(bucketPath, { recursive: true })
+    const areas = buckets[bucket]
+    for (const area in areas) {
+      const jsonFilePath = path.join(bucketPath, `${area}.json`)
+      const jsonContent = JSON.stringify(areas[area], null, 2)
+      await fs.writeFile(jsonFilePath, jsonContent, 'utf-8')
     }
   }
+
+  await fs.mkdir(mapDir, { recursive: true })
+  for (const bucket in buckets) {
+    const areas = buckets[bucket]
+    const sortedAreaKeys = Object.keys(areas).sort()
+    let mapTsContent = 'const areas = {\n'
+    for (const area of sortedAreaKeys) {
+      mapTsContent += `  '${area}': () => import('../bucket/${bucket}/${area}.json'),\n`
+    }
+    mapTsContent += [
+      '} as Record<',
+      '  string,',
+      '  () => Promise<{',
+      '    default: Record<string, { pref: string; city: string; town?: string }[]>',
+      '  }>',
+      '>\n',
+      'export default areas;\n',
+    ].join('\n')
+    const mapTsPath = path.join(mapDir, `${bucket}.ts`)
+    await fs.writeFile(mapTsPath, mapTsContent, 'utf-8')
+  }
+
+  let indexTsContent = 'const map = {\n'
+  for (let i = 0; i <= 9; i++) {
+    indexTsContent += `  '${i}': () => import('./map/${i}'),\n`
+  }
+  indexTsContent += [
+    '} as Record<',
+    '  string,',
+    '  () => Promise<{',
+    '    default: Record<',
+    '      string,',
+    '      () => Promise<{',
+    '        default: Record<string, { pref: string; city: string; town?: string }[]>',
+    '      }>',
+    '    >',
+    '  }>',
+    '>\n',
+    'export default map;\n',
+  ].join('\n')
+  const indexTsPath = path.join(assetsDir, 'index.ts')
+  await fs.writeFile(indexTsPath, indexTsContent, 'utf-8')
+
+  console.log('Assets generated successfully.')
 }
 
-build().catch((err) => {
-  console.error(err)
+prepare().catch((err) => {
+  console.error('Error during preparation:', err)
   process.exit(1)
 })

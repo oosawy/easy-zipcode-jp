@@ -5,7 +5,7 @@ import AdmZip from 'adm-zip'
 const KEN_ALL =
   'https://www.post.japanpost.jp/zipcode/dl/oogaki/zip/ken_all.zip'
 
-interface Address {
+export interface Address {
   pref: string
   city: string
   town?: string
@@ -43,5 +43,3 @@ export const fetchZipcodeMap = async (
   }
   return result
 }
-
-console.log(await fetchZipcodeMap())

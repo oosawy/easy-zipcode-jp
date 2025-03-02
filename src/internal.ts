@@ -1,11 +1,12 @@
 export type Address = {
-  zip: string
-  prefectures: string
+  pref: string
   city: string
-  other: string
+  town?: string
 }
 
-export const getAreaMap = async (areaCode: string) => {
+export type AddressMap = Record<string, Address[]>
+
+export const getAreaMap = async (areaCode: string): Promise<AddressMap | null> => {
   const asRecord = <T extends Record<string, unknown>>(mappings: T) =>
     mappings as typeof mappings extends Record<string, infer U>
       ? Record<string, U>
@@ -16,24 +17,23 @@ export const getAreaMap = async (areaCode: string) => {
     const { default: bucket } = await asRecord(maps)[areaCode.slice(0, 1)]()
     const { default: area } = await asRecord(bucket)[areaCode]()
     return area
-  } catch (err) {
-    console.log(err)
+  } catch {
     return null
   }
 }
 
-export const lookup = async (input: string): Promise<Address[] | null> => {
+export const lookup = async (input: string): Promise<AddressMap | null> => {
   const areaCode = parseAreaCode(input).area
   return await getAreaMap(areaCode)
 }
 
-export const resolve = async (input: string): Promise<Address | null> => {
+export const resolve = async (input: string): Promise<Address[] | null> => {
   const zipCode = parseZipCode(input).zip
 
   const areaCode = zipCode.slice(0, 3)
   const area = await lookup(areaCode)
 
-  return area?.find((address) => address.zip === zipCode) ?? null
+  return area?.[zipCode] ?? null
 }
 
 export const parseAreaCode = (input: string) => {
