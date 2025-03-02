@@ -367,7 +367,7 @@ describe('search', () => {
   })
 
   test('lookup 結果から、local 部分に合致する住所を結合して返す', async () => {
-    const results = await search('100-!00')
+    const results = await search('100-000')
     expect(results).toMatchInlineSnapshot(`
       [
         {

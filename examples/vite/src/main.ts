@@ -1,5 +1,6 @@
 import './style.css'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { search, lookup, resolve } from 'easy-zipcode-jp'
 
 await new Promise(r => setTimeout(r, 5000))
