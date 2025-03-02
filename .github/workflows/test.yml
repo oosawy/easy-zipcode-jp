@@ -29,8 +29,5 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Run tests
-        run: npm run test
-
       - name: Run publint
         run: npm exec publint

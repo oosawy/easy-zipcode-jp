@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "vitest",
-    "check": "tsc --noEmit && eslint",
+    "check": "tsc --noEmit && eslint && vitest",
     "dev": "tsup --watch",
     "build": "npm run gen && tsup",
     "gen": "tsx build/prepare.ts",
