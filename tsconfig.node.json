@@ -4,8 +4,8 @@
     "module": "ESNext",
     "noEmit": true,
     "strict": true,
-    // "skipLibCheck": true,
+    "skipLibCheck": true,
     "moduleResolution": "bundler"
   },
-  "include": ["src","test"]
+  "include": ["test"]
 }
