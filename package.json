@@ -1,6 +1,6 @@
 {
   "name": "easy-zipcode-jp",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "郵便番号から住所を簡単に取得できるライブラリ",
   "type": "module",
   "exports": "./dist/index.js",
