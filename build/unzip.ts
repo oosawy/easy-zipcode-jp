@@ -33,13 +33,13 @@ export const fetchZipcodeMap = async (
 
   const result: Record<string, Address[]> = {}
   for (const row of rows) {
-    const zipCode = row[2].trim()
-    if (!zipCode) continue
+    const zipcode = row[2].trim()
+    if (!zipcode) continue
     const addr = parseRow(row)
-    if (!result[zipCode]) {
-      result[zipCode] = []
+    if (!result[zipcode]) {
+      result[zipcode] = []
     }
-    result[zipCode].push(addr)
+    result[zipcode].push(addr)
   }
   return result
 }

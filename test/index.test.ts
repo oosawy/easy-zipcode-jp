@@ -7,6 +7,16 @@ vi.mock('../assets', () => {
       { city: '千代田区', pref: '東京都' },
       { city: '丸の内', pref: '東京都' },
     ],
+
+    '1000011': [{ pref: '東京都', city: '千代田区', town: '内幸町' }],
+    '1000012': [{ pref: '東京都', city: '千代田区', town: '日比谷公園' }],
+    '1000013': [
+      { pref: '東京都', city: '千代田区', town: '霞が関（次のビルを除く）' },
+    ],
+    '1000014': [
+      { pref: '東京都', city: '千代田区', town: '永田町（次のビルを除く）' },
+    ],
+
     '1001100': [{ pref: '東京都', city: '三宅島三宅村' }],
     '1001101': [{ pref: '東京都', city: '三宅島三宅村', town: '神着' }],
   }
@@ -25,7 +35,7 @@ vi.mock('../assets', () => {
   }
 })
 
-import { getAreaMap, lookup, resolve, parseCode, search } from '../src/internal'
+import { getAreaMap, search, lookup, resolve, parseCode } from '../src/internal'
 
 //
 // getAreaMap のテスト
@@ -34,9 +44,70 @@ describe('getAreaMap', () => {
   test('有効なエリアコードの場合、正しい AreaMap を返す', async () => {
     const areaMap = await getAreaMap('100')
     expect(areaMap).toBeDefined()
-    expect(Object.keys(areaMap ?? {}).length).toBe(4)
+    expect(Object.keys(areaMap ?? {}).length).toBe(8)
     expect(areaMap).toHaveProperty('1000000')
     expect(areaMap).toHaveProperty('1000001')
+    expect(areaMap).toMatchInlineSnapshot(`
+      {
+        "1000000": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+          },
+        ],
+        "1000001": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+          },
+          {
+            "city": "丸の内",
+            "pref": "東京都",
+          },
+        ],
+        "1000011": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "内幸町",
+          },
+        ],
+        "1000012": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "日比谷公園",
+          },
+        ],
+        "1000013": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "霞が関（次のビルを除く）",
+          },
+        ],
+        "1000014": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "永田町（次のビルを除く）",
+          },
+        ],
+        "1001100": [
+          {
+            "city": "三宅島三宅村",
+            "pref": "東京都",
+          },
+        ],
+        "1001101": [
+          {
+            "city": "三宅島三宅村",
+            "pref": "東京都",
+            "town": "神着",
+          },
+        ],
+      }
+    `)
   })
 
   test('存在しないエリアコードの場合、null を返す', async () => {
@@ -53,10 +124,73 @@ describe('lookup', () => {
     const result = await lookup('100')
     expect(result).toBeDefined()
     expect(result?.['1000000']).toEqual([{ city: '千代田区', pref: '東京都' }])
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "1000000": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+          },
+        ],
+        "1000001": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+          },
+          {
+            "city": "丸の内",
+            "pref": "東京都",
+          },
+        ],
+        "1000011": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "内幸町",
+          },
+        ],
+        "1000012": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "日比谷公園",
+          },
+        ],
+        "1000013": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "霞が関（次のビルを除く）",
+          },
+        ],
+        "1000014": [
+          {
+            "city": "千代田区",
+            "pref": "東京都",
+            "town": "永田町（次のビルを除く）",
+          },
+        ],
+        "1001100": [
+          {
+            "city": "三宅島三宅村",
+            "pref": "東京都",
+          },
+        ],
+        "1001101": [
+          {
+            "city": "三宅島三宅村",
+            "pref": "東京都",
+            "town": "神着",
+          },
+        ],
+      }
+    `)
   })
 
   test('不正なエリアコード (文字列) の場合、エラーを投げる', async () => {
-    await expect(lookup('xyz')).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: 無効な郵便番号: 郵便番号は、100-0001、1000001、または少なくとも 100 の形式に従う必要があります。]`)
+    await expect(lookup('xyz')).rejects.toThrowErrorMatchingInlineSnapshot(
+      `[Error: 無効な郵便番号: 郵便番号は、100-0001、1000001、または少なくとも 100 の形式に従う必要があります。]`
+    )
   })
 
   test('存在しないエリアコードの場合、null を返す', async () => {
@@ -70,8 +204,19 @@ describe('lookup', () => {
 //
 describe('resolve', () => {
   test('有効な郵便番号の場合、正しい住所リストを返す', async () => {
-    const result = await resolve('100-0000')
-    expect(result).toEqual([{ city: '千代田区', pref: '東京都' }])
+    const result = await resolve('100-0001')
+    expect(result).toMatchInlineSnapshot(`
+      [
+        {
+          "city": "千代田区",
+          "pref": "東京都",
+        },
+        {
+          "city": "丸の内",
+          "pref": "東京都",
+        },
+      ]
+    `)
   })
 
   test('存在しない郵便番号の場合、null を返す', async () => {
@@ -80,7 +225,9 @@ describe('resolve', () => {
   })
 
   test('不正な郵便番号フォーマットの場合、エラーを投げる', async () => {
-    await expect(resolve('abcd1234')).rejects.toThrowErrorMatchingInlineSnapshot(
+    await expect(
+      resolve('abcd1234')
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
       `[Error: 無効な郵便番号: 郵便番号は、100-0001、1000001、または少なくとも 100 の形式に従う必要があります。]`
     )
   })
@@ -187,6 +334,26 @@ describe('search', () => {
           "pref": "東京都",
         },
         {
+          "city": "千代田区",
+          "pref": "東京都",
+          "town": "内幸町",
+        },
+        {
+          "city": "千代田区",
+          "pref": "東京都",
+          "town": "日比谷公園",
+        },
+        {
+          "city": "千代田区",
+          "pref": "東京都",
+          "town": "霞が関（次のビルを除く）",
+        },
+        {
+          "city": "千代田区",
+          "pref": "東京都",
+          "town": "永田町（次のビルを除く）",
+        },
+        {
           "city": "三宅島三宅村",
           "pref": "東京都",
         },
@@ -200,17 +367,20 @@ describe('search', () => {
   })
 
   test('lookup 結果から、local 部分に合致する住所を結合して返す', async () => {
-    const results = await search('100-1')
+    const results = await search('100-!00')
     expect(results).toMatchInlineSnapshot(`
       [
         {
-          "city": "三宅島三宅村",
+          "city": "千代田区",
           "pref": "東京都",
         },
         {
-          "city": "三宅島三宅村",
+          "city": "千代田区",
           "pref": "東京都",
-          "town": "神着",
+        },
+        {
+          "city": "丸の内",
+          "pref": "東京都",
         },
       ]
     `)

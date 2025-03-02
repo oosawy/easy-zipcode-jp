@@ -4,22 +4,20 @@ export type Address = {
   town?: string
 }
 
-export type AreaMap = Record<string, Address[]>
-
-export const getAreaMap = async (areaCode: string): Promise<AreaMap | null> => {
+export const getAreaMap = async (areacode: string): Promise<Record<string, Address[]> | null> => {
   try {
     const { default: maps } = await import(`../assets`)
-    const { default: bucket } = await maps[areaCode.slice(0, 1)]()
-    const { default: area } = await bucket[areaCode]()
+    const { default: bucket } = await maps[areacode.slice(0, 1)]()
+    const { default: area } = await bucket[areacode]()
     return area
   } catch {
     return null
   }
 }
 
-export const lookup = async (input: string): Promise<AreaMap | null> => {
-  const areaCode = parseCode(input).area
-  return await getAreaMap(areaCode)
+export const lookup = async (input: string): Promise<Record<string, Address[]> | null> => {
+  const areacode = parseCode(input).area
+  return await getAreaMap(areacode)
 }
 
 export const search = async (input: string): Promise<Address[]> => {
