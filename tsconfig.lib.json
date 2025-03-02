@@ -6,7 +6,9 @@
     "declarationMap": true,
     "noEmit": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "moduleResolution": "bundler"
   },
   "include": ["src"]
 }

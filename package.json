@@ -11,10 +11,11 @@
   ],
   "scripts": {
     "test": "vitest",
+    "check": "tsc --noEmit && eslint && vitest run",
     "dev": "tsup --watch",
     "build": "npm run gen && tsup",
-    "gen": "ejpc-generate-json -d assets",
-    "check": "tsc --noEmit && eslint"
+    "gen": "tsx build/prepare.ts",
+    "clean": "rm -rf dist assets"
   },
   "repository": {
     "type": "git",
@@ -29,16 +30,20 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@vitest/coverage-v8": "^3.0.7",
-    "easy-ja-postal-code-generate-json": "^1.0.5",
+    "adm-zip": "^0.5.16",
+    "csv": "^6.3.11",
     "eslint-config-flat-gitignore": "^2.1.0",
     "globals": "^16.0.0",
+    "iconv-lite": "^0.6.3",
     "publint": "^0.3.7",
     "tsup": "^8.4.0",
+    "tsx": "^4.19.3",
     "typescript": "5.7",
     "typescript-eslint": "^8.25.0",
     "vitest": "^3.0.7"
   },
   "workspaces": [
-    "examples/vite-node"
+    "examples/vite-node",
+    "examples/vite"
   ]
 }

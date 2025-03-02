@@ -1,1 +1,1 @@
-export { type Address, lookup, resolve } from './internal'
+export { type Address, search, lookup, resolve } from './internal'

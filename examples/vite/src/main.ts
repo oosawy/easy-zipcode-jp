@@ -1,4 +1,9 @@
+import './style.css'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { search, lookup, resolve } from 'easy-zipcode-jp'
+
+await new Promise(r => setTimeout(r, 5000))
 
 // [
 //   { city: '千代田区', pref: '東京都' },
@@ -6,7 +11,7 @@ import { search, lookup, resolve } from 'easy-zipcode-jp'
 //   { city: '丸の内', pref: '東京都' },
 //   ...
 // ]
-console.log(await search('100-100'))
+// console.log(await search('100-100'))
 
 // {
 //   1000000: [{ city: '千代田区', pref: '東京都' }],
@@ -23,4 +28,4 @@ console.log(await lookup('100'))
 //   { city: '千代田区', pref: '東京都' },
 //   { city: '丸の内', pref: '東京都' },
 // ]
-console.log(await resolve('100-0001'))
+// console.log(await resolve('100-0001'))
