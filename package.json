@@ -43,6 +43,7 @@
     "vitest": "^3.0.7"
   },
   "workspaces": [
-    "examples/vite-node"
+    "examples/vite-node",
+    "examples/vite"
   ]
 }
